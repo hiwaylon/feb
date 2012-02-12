@@ -1,0 +1,9 @@
+"""Import relevant modules so clients do not need a deep view into the library
+structure.
+
+"""
+
+from behavior import Behavior
+from configuration_source import ConfigurationSource
+from entity import Entity
+from entity_factory import EntityFactory
