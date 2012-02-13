@@ -9,8 +9,9 @@ from factory_manager import FactoryManager
 
 
 class EntityFactory(object):
-    def __init__(self, configuration_source):
+    def __init__(self, configuration_source, behavior_factory):
         self._configuration_source = configuration_source
+        self._behavior_factory=behavior_factory
 
     def create(self, entity_tag):
         
@@ -29,21 +30,11 @@ class EntityFactory(object):
                 _configuration_error(
                     "Behavior configuration (%s) requires a tag attribute." %
                     (configuration))
-            
-            # TODO: FM registerations stuff can probably be moved to module 
-            # scope level when EntityFactory is broken out.
-            factory_manager = FactoryManager()
-            _register_behavior_factories(factory_manager)
-            behavior = factory_manager.create(behavior_tag)
+            behavior = self._behavior_factory.create(behavior_tag)
             behaviors[behavior_tag] = behavior
 
         return Entity(behaviors=behaviors)
 
-
-def _register_behavior_factories(factory_manager):
-    print "nosh"
-    # TODO: REgister some factories.
-    return factory_manager
 
 # TODO: make ConfigurationError a re-usable utility in library
 class ConfigurationError(Exception):

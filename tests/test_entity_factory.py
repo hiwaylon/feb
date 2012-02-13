@@ -20,31 +20,28 @@ class TestEntityFactory(unittest.TestCase):
     def setUp(self):
         super(TestEntityFactory, self).setUp()
         self._capture = {}
-        self._original_register_behaviors = \
-            entity_factory._register_behavior_factories
 
-        def stub_behavior_registrar(factory_manager):
-            factory_manager.register("stub", self._make_stub_behavior)
-            return StubBehavior
-        
-        entity_factory._register_behavior_factories = stub_behavior_registrar
+        # Register stub behaviors with factory to be passed to EntityFactory.
+        self._behavior_factory = feb.FactoryManager()
+        self._behavior_factory.register("stub", self._make_stub_behavior)
 
     def tearDown(self):
         super(TestEntityFactory, self).tearDown()
-        entity_factory._register_behavior_factories = \
-            self._original_register_behaviors
 
     def test_entity_construction(self):
         """It should create an entity from the given tag.""" 
         configuration_source = StubConfigurationSource()
-        factory = feb.EntityFactory(configuration_source=configuration_source)
+        factory = feb.EntityFactory(
+            configuration_source=configuration_source,
+            behavior_factory=self._behavior_factory)
         entity = factory.create("stub_entity")
         self.assertIsNotNone(entity)
 
     def test_created_entity_response_to_event(self):
         """The new entity should respond to the given event."""
         factory = feb.EntityFactory(
-            configuration_source=StubConfigurationSource())
+            configuration_source=StubConfigurationSource(),
+            behavior_factory=self._behavior_factory)
         entity = factory.create("stub_entity")
         entity.stub()
         self.assertTrue(self._capture["called"])

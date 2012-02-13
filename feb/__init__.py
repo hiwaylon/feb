@@ -7,3 +7,4 @@ from behavior import Behavior
 from configuration_source import ConfigurationSource
 from entity import Entity
 from entity_factory import EntityFactory
+from factory_manager import FactoryManager
